@@ -10,6 +10,7 @@ import (
 
 var (
 	lastHeartbeat time.Time
+	heartbeatLost bool
 	mu            sync.Mutex
 )
 
@@ -37,6 +38,12 @@ func main() {
 func checkHealth(w http.ResponseWriter, r *http.Request) {
 	mu.Lock()
 	lastHeartbeat = time.Now()
+
+	if heartbeatLost {
+		fmt.Println("HEARTBEAT RECOVERED!")
+		heartbeatLost = false
+	}
+
 	mu.Unlock()
 
 	fmt.Println("HEARTBEAT RECEIVED")
@@ -53,14 +60,15 @@ func monitorHeartbeat() {
 		<-ticker.C
 
 		mu.Lock()
-		last := lastHeartbeat
-		mu.Unlock()
 
-		timeSinceLastHeartbeat := time.Since(last)
+		timeSinceLastHeartbeat := time.Since(lastHeartbeat)
 
 		if timeSinceLastHeartbeat > 30*time.Second {
-			fmt.Println("HEARTBEAT LOST!")
+			if !heartbeatLost {
+				fmt.Println("HEARTBEAT LOST!")
+				heartbeatLost = true
+			}
 		}
-
+		mu.Unlock()
 	}
 }
