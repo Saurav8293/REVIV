@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+const (
+	bucketName = "reviv-postgres-backup-20260817"
+	backupFile = "../postgres-backup/backup.sql"
+)
+
 func main() {
 	client := &http.Client{
 		Timeout: 10 * time.Second,
@@ -23,6 +28,14 @@ func main() {
 
 		if resp.StatusCode == http.StatusOK {
 			fmt.Println("Server is reachable!")
+
+			s3Key := fmt.Sprintf("backup-%d.sql", time.Now().Unix())
+
+			err := uploadFile(bucketName, backupFile, s3Key)
+			if err != nil {
+				fmt.Printf("s=S3 upload failed: %v\n", err)
+			}
+
 		}
 		resp.Body.Close()
 
