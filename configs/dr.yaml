@@ -1,0 +1,46 @@
+# REVIV Disaster Recovery Engine Configuration
+primary:
+  node_id: "primary-vps-01"
+  host: "127.0.0.1"
+  heartbeat_url: "http://127.0.0.1:8080/api/heartbeat"
+  heartbeat_interval_seconds: 5
+  db_host: "127.0.0.1"
+  db_port: 5432
+  db_name: "mydb"
+  db_user: "myuser"
+  db_password: "mypassword"
+
+backup:
+  s3_bucket: "reviv-postgres-backup-20260817"
+  s3_region: "ap-south-1"
+  wal_prefix: "wal/"
+  wal_push_interval_seconds: 30
+  base_backup_cron: "0 3 * * *"
+
+heartbeat:
+  listen_port: 8080
+  check_interval: 5s
+  suspect_threshold_misses: 3
+  down_threshold_misses: 5
+  timeout_seconds: 30
+  require_confirmation: true
+  confirmation_timeout_hours: 2
+
+alerting:
+  enabled: true
+  webhook_url: ""
+  slack_url: ""
+
+aws:
+  region: "ap-south-1"
+  vpc_id: ""
+  subnet_id: ""
+  security_group_id: ""
+  ami_id: "ami-0dee22c13ea7a9a67"
+  instance_type: "t3.small"
+  key_pair_name: ""
+  route53_zone_id: "Z0123456789ABCDEF"
+  domain: "app.reviv-dr.internal"
+  record_type: "A"
+  docker_image: "customer/app:latest"
+  simulate_cloud_ops: true
