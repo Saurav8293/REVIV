@@ -1,6 +1,7 @@
 *.exe
 *.out
 *.sql
+bin/
 
 .env
 
