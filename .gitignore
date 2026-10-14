@@ -1,6 +1,7 @@
 *.exe
 *.out
 *.sql
+bin/
 
 .env
 
@@ -10,3 +11,4 @@
 .DS_Store
 Thumbs.db
 
+docs/
